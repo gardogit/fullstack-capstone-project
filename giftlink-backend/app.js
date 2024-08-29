@@ -19,15 +19,14 @@ connectToDatabase().then(() => {
 
 app.use(express.json());
 
-// Import the giftRoutes n searchRoutes
+// Route files
 const giftRoutes = require('./routes/giftRoutes');
 const searchRoutes = require('./routes/searchRoutes');
-
 const pinoHttp = require('pino-http');
 const logger = require('./logger');
 
 app.use(pinoHttp({ logger }));
-// add giftRoutes n searchRoutes
+// Use Routes
 app.use('/api/gifts', giftRoutes);
 app.use('/api/search', searchRoutes);
 
