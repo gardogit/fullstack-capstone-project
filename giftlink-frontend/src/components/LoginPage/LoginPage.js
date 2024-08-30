@@ -1,14 +1,18 @@
 // front/src/components/LoginPage/LoginPage.js
 import React, { useState } from 'react';
+import { useAppContext } from '../../context/AuthContext';
 import './LoginPage.css';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { setIsLoggedIn, setUserName } = useAppContext();
 
     const handleLogin = (e) => {
         e.preventDefault();
         console.log('Logging in:', { email, password });
+        setIsLoggedIn(true);
+        setUserName(email);
     };
 
     return (

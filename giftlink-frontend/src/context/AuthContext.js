@@ -13,4 +13,10 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAppContext = () => useContext(AppContext);
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("useAppContext must be used inside an AuthProvider");
+  }
+  return context;
+};

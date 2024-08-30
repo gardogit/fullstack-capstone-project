@@ -1,4 +1,3 @@
-// front/src/components/RegisterPage/RegisterPage.js
 import React, { useState } from 'react';
 import './RegisterPage.css';
 

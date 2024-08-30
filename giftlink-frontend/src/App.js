@@ -1,16 +1,19 @@
 import React from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import MainPage from './components/MainPage/MainPage';
 import HomePage from './components/HomePage/HomePage';
 import DetailsPage from './components/DetailsPage/DetailsPage';
+import RegisterPage from './components/RegisterPage/RegisterPage';
+import LoginPage from './components/LoginPage/LoginPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
 
   return (
-    <>
+    <AuthProvider>
         <Navbar/>
         <Routes>
           <Route path="/home" element={<HomePage />} />
@@ -20,7 +23,7 @@ function App() {
           <Route path="/app/register" element={<RegisterPage />} />
           <Route path="/app/product/:productId" element={<DetailsPage/>} />
         </Routes>
-        </>
+    </AuthProvider>
   );
 }
 
