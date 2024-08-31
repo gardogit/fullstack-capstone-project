@@ -1,6 +1,6 @@
 // front/src/components/LoginPage/LoginPage.js
 import React, { useState, useEffect } from 'react';
-import {urlConfig} from '../../config'
+import {urlConfig} from '../../config';
 import { useAppContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
@@ -24,14 +24,14 @@ function LoginPage() {
         //api call
         const res = await fetch(`${urlConfig.backendUrl}/api/auth/login`, {
             method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': bearerToken ? `Bearer ${bearerToken}` : '', // Include Bearer token if available
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-          })
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': bearerToken ? `Bearer ${bearerToken}` : '', // Include Bearer token if available
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            })
         });
         const json = await res.json();
         console.log('Json',json);
@@ -40,6 +40,7 @@ function LoginPage() {
           sessionStorage.setItem('name', json.userName);
           sessionStorage.setItem('email', json.userEmail);
           setIsLoggedIn(true);
+          setUserName(json.userName);
           navigate('/app');
         } else {
           document.getElementById("email").value="";

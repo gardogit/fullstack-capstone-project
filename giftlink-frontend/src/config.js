@@ -3,4 +3,4 @@ const config = {
 };
 
 console.log(`backendUrl in config.js: ${config.backendUrl}`)
-export default config;
+export {config as urlConfig}
