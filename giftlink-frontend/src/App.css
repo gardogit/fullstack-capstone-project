@@ -138,8 +138,39 @@ body,
 
 /* Change the background color of the navbar */
 .navbar {
-  background-color: #f8f9fa; /* A light color for contrast with the text */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* A subtle shadow for depth */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.collapse.navbar-collapse {
+  display: flex; /* Asegura que los hijos se distribuyan correctamente */
+  justify-content: space-between; /* Distribuye los elementos a los extremos */
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
+
+.left,
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  margin-left: 15px; /* Espacio entre los elementos de navegación */
+}
+
+.navbar-text {
+  margin-right: 15px; /* Espacio entre el texto y el botón de logout */
 }
 
 /* Add a hover effect to nav links */
