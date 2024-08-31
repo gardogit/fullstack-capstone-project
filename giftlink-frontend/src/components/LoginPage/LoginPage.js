@@ -34,23 +34,24 @@ function LoginPage() {
             })
         });
         const json = await res.json();
-        console.log('Json',json);
+        console.log('Json', json);
         if (json.authtoken) {
-          sessionStorage.setItem('auth-token', json.authtoken);
-          sessionStorage.setItem('name', json.userName);
-          sessionStorage.setItem('email', json.userEmail);
-          setIsLoggedIn(true);
-          setUserName(json.userName);
-          navigate('/app');
+            sessionStorage.setItem('auth-token', json.authtoken);
+            sessionStorage.setItem('name', json.userName);
+            sessionStorage.setItem('email', json.userEmail);
+            setIsLoggedIn(true);
+            setUserName(json.userName);
+            navigate('/app');
         } else {
-          document.getElementById("email").value="";
-          document.getElementById("password").value="";
-          setIncorrect("Wrong password. Try again.");
-          setTimeout(() => {
-            setIncorrect("");
-          }, 2000);
+            setEmail('');
+            setPassword('');
+            setIncorrect("Wrong password. Try again.");
+            setTimeout(() => {
+                setIncorrect("");
+            }, 2000);
         }
-      }
+    }
+    
 
     return (
         <div className="container mt-5">

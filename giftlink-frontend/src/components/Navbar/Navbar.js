@@ -29,22 +29,24 @@ export default function Navbar() {
                         <Link className="nav-link" to="/app/search">Search</Link>
                     </li>
                 </ul>
-                <ul className="navbar-nav ml-auto">
-                    {isLoggedIn ? (
-                        <>
+                <div>
+                    <ul className="navbar-nav ml-auto">
+                        {isLoggedIn ? (
+                            <>
+                                <li className="nav-item">
+                                    <span className="navbar-text">Hello, {userName}</span>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
+                                </li>
+                            </>
+                        ) : (
                             <li className="nav-item">
-                                <span className="navbar-text">Hello, {userName}</span>
+                                <Link className="nav-link" to="/app/login">Login</Link>
                             </li>
-                            <li className="nav-item">
-                                <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
-                            </li>
-                        </>
-                    ) : (
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/app/login">Login</Link>
-                        </li>
-                    )}
-                </ul>
+                        )}
+                    </ul>
+                </div>
             </div>
         </nav>
     );

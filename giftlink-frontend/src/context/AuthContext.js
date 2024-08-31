@@ -1,10 +1,20 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const AppContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const authToken = sessionStorage.getItem('auth-token');
+    const storedUserName = sessionStorage.getItem('name');
+
+    if (authToken) {
+      setIsLoggedIn(true);
+      setUserName(storedUserName || "");
+    }
+  }, []);
 
   return (
     <AppContext.Provider value={{ isLoggedIn, setIsLoggedIn, userName, setUserName }}>
