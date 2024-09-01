@@ -1,4 +1,4 @@
-// front/src/components/LoginPage/LoginPage.js
+/*jshint esversion: 8 */
 import React, { useState, useEffect } from 'react';
 import {urlConfig} from '../../config';
 import { useAppContext } from '../../context/AuthContext';
