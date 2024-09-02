@@ -10,43 +10,52 @@ dotenv.config();
 const { body, validationResult } = require('express-validator');
 const JWT_SECRET = process.env.JWT_SECRET;
 
-router.post('/register', async (req, res) => {
-    try {
-        // Connect to `giftsdb` in MongoDB through `connectToDatabase` in `db.js`
-        const db = await connectToDatabase();
+router.post('/register', 
+    // Add validation checks
+    [
+        body('email').isEmail().withMessage('Enter a valid email address'),
+        body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+        body('firstName').notEmpty().withMessage('First name is required'),
+        body('lastName').notEmpty().withMessage('Last name is required')
+    ],
+    async (req, res) => {
+        // Check for validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
 
-        // Access MongoDB collection
-        const collection = db.collection("users");
+        try {
+            // Connect to `giftsdb` in MongoDB through `connectToDatabase` in `db.js`
+            const db = await connectToDatabase();
 
-        // Check for existing email
-        const existingEmail = await collection.findOne({ email: req.body.email });
+            // Access MongoDB collection
+            const collection = db.collection("users");
 
-        const salt = await bcryptjs.genSalt(10);
-        const hash = await bcryptjs.hash(req.body.password, salt);
-        const email = req.body.email;
+            // Check for existing email
+            const existingEmail = await collection.findOne({ email: req.body.email });
+            if (existingEmail) {
+                return res.status(400).json({ error: 'Email already in use' });
+            }
 
-        // Save user details in database
-        const newUser = await collection.insertOne({
-            email: req.body.email,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            password: hash,
-            createdAt: new Date(),
-        });
+            const salt = await bcryptjs.genSalt(10);
+            const hash = await bcryptjs.hash(req.body.password, salt);
 
-        const payload = {
-            user: {
-                id: newUser.insertedId,
-            },
-        };
+            // Save user details in database
+            await collection.insertOne({
+                email: req.body.email,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                password: hash,
+            });
 
-        const authtoken = jwt.sign(payload, JWT_SECRET);
-        logger.info('User registered successfully');
-        res.json({authtoken,email});
-    } catch (e) {
-         return res.status(500).send('Internal server error');
+            res.status(201).json({ message: 'User registered successfully' });
+        } catch (error) {
+            logger.error(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
     }
-});
+);
 
 router.post('/login', async (req, res) => {
     console.log("\n\n Inside login")
