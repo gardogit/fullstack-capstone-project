@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './DetailsPage.css';
-import { urlConfig } from '../../config';
+import {urlConfig} from '../../config';
 
 function DetailsPage() {
     const navigate = useNavigate();
@@ -10,19 +10,19 @@ function DetailsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-	useEffect(() => {
+    useEffect(() => {
         const authenticationToken = sessionStorage.getItem('auth-token');
         if (!authenticationToken) {
-			// Check for authentication and redirect
+            // Task 1: Check for authentication and redirect
             navigate('/app/login');
-            return;
         }
 
         // get the gift to be rendered on the details page
         const fetchGift = async () => {
             try {
-				// Fetch gift details
-                const response = await fetch(`${urlConfig.backendUrl}/api/gifts/${productId}`);
+                // Task 2: Fetch gift details
+                const url = `${urlConfig.backendUrl}/api/gifts/${productId}`;
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -36,31 +36,46 @@ function DetailsPage() {
         };
 
         fetchGift();
-		//Scroll to top on component mount
-		window.scrollTo(0, 0);
+
+        // Task 3: Scroll to top on component mount
+        window.scrollTo(0, 0);
 
     }, [productId, navigate]);
 
-
     const handleBackClick = () => {
-		//Handle back click
-		navigate(-1);
-	};
+        // Task 4: Handle back click
+        navigate(-1);
+    };
 
-	//The comments have been hardcoded for this project.
+    //The comments have been hardcoded for this project.
     const comments = [
-        { author: "John Doe", comment: "I would like this!" },
-        { author: "Jane Smith", comment: "Just DMed you." },
-        { author: "Alice Johnson", comment: "I will take it if it's still available." },
-        { author: "Mike Brown", comment: "This is a good one!" },
-        { author: "Sarah Wilson", comment: "My family can use one. DM me if it is still available. Thank you!" }
+        {
+            author: "John Doe",
+            comment: "I would like this!"
+        },
+        {
+            author: "Jane Smith",
+            comment: "Just DMed you."
+        },
+        {
+            author: "Alice Johnson",
+            comment: "I will take it if it's still available."
+        },
+        {
+            author: "Mike Brown",
+            comment: "This is a good one!"
+        },
+        {
+            author: "Sarah Wilson",
+            comment: "My family can use one. DM me if it is still available. Thank you!"
+        }
     ];
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
     if (!gift) return <div>Gift not found</div>;
 
-return (
+    return (
         <div className="container mt-5">
             <button className="btn btn-secondary mb-3" onClick={handleBackClick}>Back</button>
             <div className="card product-details-card">
@@ -70,22 +85,34 @@ return (
                 <div className="card-body">
                     <div className="image-placeholder-large">
                         {gift.image ? (
-			            <img src={gift.image} alt={gift.name} className="product-image-large" />
+                            // Task 5: Display gift image
+                            <img src={gift.image} alt={gift.name} className="product-image-large" />
                         ) : (
                             <div className="no-image-available-large">No Image Available</div>
                         )}
                     </div>
-                    <p><strong>Category:</strong> {gift.category}</p>
-                    <p><strong>Condition:</strong> {gift.condition}</p>
-                    <p><strong>Date Added:</strong> {gift.date_added}</p>
-                    <p><strong>Age (Years):</strong> {gift.age_years}</p>
-                    <p><strong>Description:</strong> {gift.description}</p>
+                    {/* Task 6: Display gift details */}
+                    <p><strong>Category:</strong> 
+                        {gift.category}
+                    </p>
+                    <p><strong>Condition:</strong> 
+                        {gift.condition}
+                    </p>
+                    <p><strong>Date Added:</strong> 
+                        {gift.dateAdded}
+                    </p>
+                    <p><strong>Age (Years):</strong> 
+                        {gift.age}
+                    </p>
+                    <p><strong>Description:</strong> 
+                        {gift.description}
+                    </p>
                 </div>
             </div>
             <div className="comments-section mt-4">
                 <h3 className="mb-3">Comments</h3>
-				{// Render comments section
-				comments.map((comment, index) => (
+                {/* Task 7: Render comments section */}
+                {comments.map((comment, index) => (
                     <div key={index} className="card mb-3">
                         <div className="card-body">
                             <p className="comment-author"><strong>{comment.author}:</strong></p>
