@@ -5,7 +5,7 @@ import { useAppContext } from '../../context/AuthContext';
 export default function Navbar() {
     const { isLoggedIn, setIsLoggedIn, userName, setUserName } = useAppContext();
     const navigate=useNavigate();
-
+    
     useEffect(() => {
       const authTokenFromSession = localStorage.getItem('auth-token');
       const nameFromStorage = localStorage.getItem('name');
@@ -27,9 +27,6 @@ export default function Navbar() {
         setIsLoggedIn(false);
         navigate(`/app`);
 
-    }
-    const profileSecton=()=>{
-      navigate(`/app/profile`);
     }
     return (
         <>
