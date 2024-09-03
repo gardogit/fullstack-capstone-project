@@ -15,6 +15,23 @@ const logger = pino();  // Create a Pino logger instance
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
+const authenticate = (req, res, next) => {
+  const authtoken = req.cookies.authtoken;
+  if (authtoken) {
+    try {
+      const decoded = jwt.verify(authtoken, JWT_SECRET);
+      req.user = decoded.user;
+    } catch (error) {
+      if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
+        return res.status(401).json({ error: 'Token expirado o no válido' });
+      } else {
+        return next(error);
+      }
+    }
+  }
+  next();
+};
+
 router.post('/register', async (req, res) => {
     try {
       //Connect to `giftsdb` in MongoDB through `connectToDatabase` in `db.js`.
@@ -90,14 +107,12 @@ router.post('/login', async (req, res) => {
         return res.status(500).json({ error: 'Internal server error', details: e.message });
       }
 });
+router.use(authenticate);
 
 // update API
 router.put('/update', async (req, res) => {
-    // Task 2: Validate the input using `validationResult` and return approiate message if there is an error.
 
     const errors = validationResult(req);
-
-    // Task 3: Check if `email` is present in the header and throw an appropriate error message if not present.
     if (!errors.isEmpty()) {
         logger.error('Validation errors in update request', errors.array());
         return res.status(400).json({ errors: errors.array() });

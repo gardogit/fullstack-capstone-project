@@ -4,26 +4,26 @@ import { useAppContext } from '../../context/AuthContext';
 
 export default function Navbar() {
     const { isLoggedIn, setIsLoggedIn, userName, setUserName } = useAppContext();
+    const navigate=useNavigate();
 
-  const navigate=useNavigate();
     useEffect(() => {
-        const authTokenFromSession = sessionStorage.getItem('auth-token');
-        const nameFromSession = sessionStorage.getItem('name');
-        if (authTokenFromSession) {
-            if(isLoggedIn && nameFromSession) {
-              setUserName(nameFromSession);
-            } else {
-              sessionStorage.removeItem('auth-token');
-              sessionStorage.removeItem('name');
-              sessionStorage.removeItem('email');
-              setIsLoggedIn(false);
-            }
-        }
-    },[isLoggedIn, setIsLoggedIn, setUserName])
+      const authTokenFromSession = localStorage.getItem('auth-token');
+      const nameFromStorage = localStorage.getItem('name');
+      if (authTokenFromSession && nameFromStorage) {
+          setUserName(nameFromStorage);
+          setIsLoggedIn(true);
+      } else {
+          localStorage.removeItem('auth-token');
+          localStorage.removeItem('name');
+          localStorage.removeItem('email');
+          setIsLoggedIn(false);
+      }
+  }, [setIsLoggedIn, setUserName]);
+
     const handleLogout=()=>{
-        sessionStorage.removeItem('auth-token');
-        sessionStorage.removeItem('name');
-        sessionStorage.removeItem('email');
+      localStorage.removeItem('auth-token');
+      localStorage.removeItem('name');
+      localStorage.removeItem('email');
         setIsLoggedIn(false);
         navigate(`/app`);
 
@@ -54,7 +54,7 @@ export default function Navbar() {
             <ul className="navbar-nav ml-auto">
             {isLoggedIn ? (
                 <>
-                    <li className="nav-item"> <span className="nav-link" style={{color: "black", cursor:"pointer"}} onClick={profileSecton}>Welcome, {userName}</span> </li>
+                    <li className="nav-item"> <span className="nav-link" style={{color: "black", cursor:"pointer"}} onClick={() => navigate(`/app/profile`)}>Welcome, {userName}</span> </li>
                     <li className="nav-item"><button className="nav-link login-btn" onClick={handleLogout}>Logout</button></li>
                 </>
                 ) : (

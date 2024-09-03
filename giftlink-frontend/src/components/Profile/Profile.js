@@ -13,7 +13,7 @@ const Profile = () => {
  const [editMode, setEditMode] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    const authtoken = sessionStorage.getItem("auth-token");
+    const authtoken = localStorage.getItem("auth-token");
     if (!authtoken) {
       navigate("/app/login");
     } else {
@@ -23,9 +23,9 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const authtoken = sessionStorage.getItem("auth-token");
-      const email = sessionStorage.getItem("email");
-      const name=sessionStorage.getItem('name');
+      const authtoken = localStorage.getItem("auth-token");
+      const email = localStorage.getItem("email");
+      const name=localStorage.getItem('name');
       if (name || authtoken) {
                 const storedUserDetails = {
                   name: name,
@@ -55,8 +55,8 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const authtoken = sessionStorage.getItem("auth-token");
-    const email = sessionStorage.getItem("email");
+    const authtoken = localStorage.getItem("auth-token");
+    const email = localStorage.getItem("email");
 
     if (!authtoken || !email) {
       navigate("/app/login");
@@ -77,7 +77,7 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       // Update the user details in session storage
       setUserName(updatedDetails.name);//Step 1: Task 4
-      sessionStorage.setItem("name", updatedDetails.name);
+      localStorage.setItem("name", updatedDetails.name);
       setUserDetails(updatedDetails);
       setEditMode(false);
       // Display success message to the user
