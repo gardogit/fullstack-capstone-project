@@ -16,21 +16,22 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const authenticate = (req, res, next) => {
-  const authtoken = req.cookies.authtoken;
-  if (authtoken) {
-    try {
-      const decoded = jwt.verify(authtoken, JWT_SECRET);
-      req.user = decoded.user;
-    } catch (error) {
-      if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
-        return res.status(401).json({ error: 'Token expirado o no válido' });
-      } else {
-        return next(error);
-      }
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+  
+    if (!token) {
+      return res.status(401).json({ error: 'Token not provided' });
     }
-  }
-  next();
-};
+  
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      req.user = decoded.user;
+      next();
+    } catch (error) {
+      logger.error('Authentication error', error);
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+  };  
 
 router.post('/register', async (req, res) => {
     try {
@@ -111,8 +112,11 @@ router.use(authenticate);
 
 // update API
 router.put('/update', async (req, res) => {
+    //Validate the input using `validationResult` and return approiate message if there is an error.
 
     const errors = validationResult(req);
+
+    //Check if `email` is present in the header and throw an appropriate error message if not present.
     if (!errors.isEmpty()) {
         logger.error('Validation errors in update request', errors.array());
         return res.status(400).json({ errors: errors.array() });
@@ -126,11 +130,11 @@ router.put('/update', async (req, res) => {
             return res.status(400).json({ error: "Email not found in the request headers" });
         }
 
-        //Task 4: Connect to MongoDB
+        //Connect to MongoDB
         const db = await connectToDatabase();
         const collection = db.collection("users");
 
-        //Task 5: Find user credentials
+        //Find user credentials
         const existingUser = await collection.findOne({ email });
 
         if (!existingUser) {
@@ -141,14 +145,14 @@ router.put('/update', async (req, res) => {
         existingUser.firstName = req.body.name;
         existingUser.updatedAt = new Date();
 
-        //Task 6: Update user credentials in DB
+        //Update user credentials in DB
         const updatedUser = await collection.findOneAndUpdate(
             { email },
             { $set: existingUser },
             { returnDocument: 'after' }
         );
 
-        //Task 7: Create JWT authentication with user._id as payload using secret key from .env file
+        //Create JWT authentication with user._id as payload using secret key from .env file
         const payload = {
             user: {
                 id: updatedUser._id.toString(),
@@ -164,4 +168,5 @@ router.put('/update', async (req, res) => {
         return res.status(500).send("Internal Server Error");
     }
 });
+
 module.exports = router;
